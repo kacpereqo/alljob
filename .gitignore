@@ -147,6 +147,7 @@ dmypy.json
 .pyre/
 
 .pyc
+/.vscode
 
 # pytype static type analyzer
 .pytype/
