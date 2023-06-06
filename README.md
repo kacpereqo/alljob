@@ -4,8 +4,8 @@
 
 ### requirements
 
--poetry
--python 3.10
+- poetry
+- python 3.10
 
 ### installation
 
