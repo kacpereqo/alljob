@@ -8,6 +8,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 pendulum = "^2.1.2"
+python-dotenv = "^1.0.0"
 
 
 
@@ -21,6 +22,12 @@ pytest = "^7.3.1"
 fastapi = "^0.96.0"
 uvicorn = {extras = ["standard"], version = "^0.22.0"}
 pymongo = "^4.3.3"
+
+
+[tool.poetry.group.scrapper.dependencies]
+pymongo = "^4.3.3"
+pycountry = "^22.3.5"
+geopy = "^2.3.0"
 
 [build-system]
 requires = ["poetry-core"]
