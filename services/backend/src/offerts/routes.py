@@ -1,5 +1,7 @@
 from database.db import DB
 from fastapi import APIRouter
+from fastapi.responses import JSONResponse
+from offerts.schemas import Filtering, Sorting
 
 router = APIRouter(prefix="/api/offerts")
 
@@ -8,5 +10,7 @@ router = APIRouter(prefix="/api/offerts")
 def get_leading_offerts(
     offset: int = 0,
     limit: int = 20,
-):
-    return DB.get_leading_offerts(offset, limit)
+    sorting: Sorting | None = None,
+    filters: Filtering | None = None,
+) -> JSONResponse:
+    return DB.get_leading_offerts(offset, limit, sorting, filters)
