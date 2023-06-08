@@ -6,9 +6,10 @@ _________________
 
 ### requirements
 
-- poetry
+- poetry / pip
 - python 3.10
 - node
+- working internet connection
 
 _________________
 ### installation

@@ -1,0 +1,12 @@
+:root { 
+    --main-color:   #08D9D6;
+    --second-color: #252A34;
+    --accent-color: #FF2E63;
+
+    --font-color-light: #ececec;
+    --font-color: #d7d7d7;
+    --font-color-dark: #c2c2c2;
+
+    --navbar-height: 60px;
+
+}
