@@ -118,6 +118,10 @@ class GeoUtils:
         Returns:
             str -- country name
         """
+        country_code = country_code.upper()
+
+        if country_code == "EN":
+            return "England"
 
         return pycountry.countries.get(alpha_2=country_code).name
 
