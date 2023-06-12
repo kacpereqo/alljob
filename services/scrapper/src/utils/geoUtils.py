@@ -125,6 +125,32 @@ class GeoUtils:
 
         return pycountry.countries.get(alpha_2=country_code).name
 
+    def location_builder(self, **kwargs) -> dict:
+        """
+        Build final location dict
+
+        Arguments:
+            **kwargs -- kwargs
+
+        Returns:
+            dict -- final location dict
+        """
+
+        _default_geolocation = {
+            "latitude": None,
+            "longitude": None,
+        }
+
+        final_location = {
+            "country": kwargs.get("country", None),
+            "city": kwargs.get("city", None),
+            "street": kwargs.get("street", None),
+            "postalCode": kwargs.get("postalCode", None),
+            "geoLocation": kwargs.get("geoLocation", _default_geolocation),
+        }
+
+        return final_location
+
     # def coords_to_city(latitude, longitude):
     #     #
     #     # NA RAZIE NIE JEST POTRZEBNE

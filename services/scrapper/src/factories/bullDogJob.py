@@ -1,43 +1,18 @@
 import requests
 import ujson
+import locale
 
 from offertFactory import OffertFactory
-from geoUtils import GeoUtils
+from utils.geoUtils import GeoUtils
 
 
 class BullDogJob(OffertFactory):
     def get_offerts() -> dict:
         url = "https://bulldogjob.pl/graphql"
 
-        def _final_location_builder(**kwargs) -> dict:
-            """
-            Build final location dict
-
-            Arguments:
-                **kwargs -- kwargs
-
-            Returns:
-                dict -- final location dict
-            """
-
-            _default_geolocation = {
-                "latitude": None,
-                "longitude": None,
-            }
-
-            final_location = {
-                "country": kwargs.get("country", None),
-                "city": kwargs.get("city", None),
-                "street": kwargs.get("street", None),
-                "postalCode": kwargs.get("postalCode", None),
-                "geoLocation": kwargs.get("geoLocation", _default_geolocation),
-            }
-
-            return final_location
-
         def parse_locations(offert: dict) -> list:
             geo_u = GeoUtils()
-            locations = []
+            _locations = []
 
             for location in offert["locations"]:
                 country = "Poland"
@@ -47,16 +22,20 @@ class BullDogJob(OffertFactory):
 
                 geoLocation = geo_u.city_to_coords(city_name=city, country=country)
 
-                final_location = _final_location_builder(
+                final_location = geo_u.location_builder(
                     country=country,
                     city=city,
                     street=street,
                     geoLocation=geoLocation,
                 )
 
-                locations.append(final_location)
+                _locations.append(final_location)
 
-            return locations
+            locale.setlocale(locale.LC_COLLATE, "pl_PL.UTF-8")
+
+            _locations = sorted(_locations, key=lambda k: locale.strxfrm(k["city"]))
+
+            return _locations
 
         def parse_employment_type(offert: dict) -> list:
             def _salary_parser(salary: dict) -> dict:
@@ -191,19 +170,19 @@ class BullDogJob(OffertFactory):
                 "logo_url": offert["company"].get("logo", {}).get("url", None),
             }
 
-            offert = {
-                "title": offert["position"],
-                "url": url,
-                "company": company_data,
-                "technologies": technologies,
-                "locations": locations,
-                "employmentTypes": employement_types,
-                "seniorities": seniorities,
-                "workingMode": working_modes,
-                "description": None,
-                "languages": None,
-                "site": "bulldogjob.com",
-            }
+            offert = OffertFactory.offert_builder(
+                title=offert["position"],
+                url=url,
+                company=company_data,
+                technologies=technologies,
+                locations=locations,
+                employmentTypes=employement_types,
+                seniorities=seniorities,
+                workingMode=working_modes,
+                description=None,
+                languages=None,
+                site="bulldogjob.com",
+            )
 
             return offert
 
@@ -219,81 +198,81 @@ class BullDogJob(OffertFactory):
 
             q = """
             query searchJobs(
-  $page: Int
-  $perPage: Int
-  $filters: JobFilters
-  $order: JobsSearchOrderBy
-  $language: LocaleEnum
-  $boostWhere: BoostWhere
-  $exclude: [ID!]
-) {
-  searchJobs(
-    page: $page
-    perPage: $perPage
-    filters: $filters
-    order: $order
-    language: $language
-    boostWhere: $boostWhere
-    exclude: $exclude
-  ) {
-    totalCount
-    nodes {
-      id
-      company {
-        name
-        visible
-        verified
-        logo {
-          url(style: "list")
-          __typename
-        }
-        __typename
-      }
-      denominatedSalaryLong {
-        money
-        currency
-        hidden
-        __typename
-      }
-      highlight
-      city
-      experienceLevel
-      locations {
-        address
-        location {
-          cityPl
-          cityEn
-          __typename
-        }
-        __typename
-      }
-      hiddenBrackets
-      matchingUserBrackets
-      position
-      remote
-      environment {
-        remotePossible
-        __typename
-      }
-      endsAt
-      recruitmentProcess
-      showSalary
-      technologies {
-        level
-        name
-        __typename
-      }
-      contractB2b
-      contractEmployment
-      contractOther
-      locale
-      applied
-      __typename
-    }
-    __typename
-  }
-}
-"""
+            $page: Int
+            $perPage: Int
+            $filters: JobFilters
+            $order: JobsSearchOrderBy
+            $language: LocaleEnum
+            $boostWhere: BoostWhere
+            $exclude: [ID!]
+            ) {
+            searchJobs(
+                page: $page
+                perPage: $perPage
+                filters: $filters
+                order: $order
+                language: $language
+                boostWhere: $boostWhere
+                exclude: $exclude
+            ) {
+                totalCount
+                nodes {
+                id
+                company {
+                    name
+                    visible
+                    verified
+                    logo {
+                    url(style: "list")
+                    __typename
+                    }
+                    __typename
+                }
+                denominatedSalaryLong {
+                    money
+                    currency
+                    hidden
+                    __typename
+                }
+                highlight
+                city
+                experienceLevel
+                locations {
+                    address
+                    location {
+                    cityPl
+                    cityEn
+                    __typename
+                    }
+                    __typename
+                }
+                hiddenBrackets
+                matchingUserBrackets
+                position
+                remote
+                environment {
+                    remotePossible
+                    __typename
+                }
+                endsAt
+                recruitmentProcess
+                showSalary
+                technologies {
+                    level
+                    name
+                    __typename
+                }
+                contractB2b
+                contractEmployment
+                contractOther
+                locale
+                applied
+                __typename
+                }
+                __typename
+            }
+            }
+            """
 
             v = {"filters": {}, "language": "pl", "page": 1, "perPage": 100}
 
@@ -312,6 +291,10 @@ class BullDogJob(OffertFactory):
 
             return _offerts
 
+        # ------------
+        # |-- BODY --|
+        # ------------
+
         offerts = get_all_offerts()
 
         parsed_offerts = []
@@ -325,31 +308,3 @@ class BullDogJob(OffertFactory):
             )
 
         return parsed_offerts
-
-
-# r =
-
-# ------------
-# |-- BODY --|
-# ------------
-
-# r = requests.get(
-#     "https://nofluffjobs.com/api/posting/",
-#     timeout=60,
-#     headers={"Content-Encoding": "gzip"},
-# )
-# json = ujson.loads(r.text)
-
-# parsed_offerts = []
-
-# offerts_length = len(json["postings"])
-
-# for idx, offert in enumerate(json["postings"][:10]):
-#     parsed_offert = parse_offert(offert)
-#     if parsed_offert is not None:
-#         parsed_offerts.append(parsed_offert)
-#     print(
-#         f"Successfully parsed [{idx+1}/{offerts_length}] offerts [nofluffjobs.com]"
-#     )
-
-# return parsed_offerts
