@@ -1,7 +1,8 @@
 <template>
   <div id="app">
-    <TheNavbar />
-    <NuxtPage></NuxtPage>
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
   </div>
 </template>
 
@@ -13,7 +14,6 @@
   font-family: "Rubik", sans-serif;
   font-family: "Space Grotesk", sans-serif;
   min-height: 100vh;
-  width: 100vw;
   display: flex;
   flex-direction: column;
   color: var(--font-color);
@@ -29,5 +29,9 @@ html {
 
   margin: 0;
   padding: 0;
+}
+
+ul {
+  list-style: none;
 }
 </style>

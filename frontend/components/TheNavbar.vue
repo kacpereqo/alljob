@@ -8,7 +8,7 @@
         <li>Oferty pracy</li>
         <li>Sprawdź pracodawce</li>
         <li class="separator"></li>
-        <li class="auth">Zaloguj się</li>
+        <li><FilledButton :text="'Zaloguj się'" /></li>
       </ul>
     </div>
   </nav>
@@ -28,6 +28,7 @@ nav {
 }
 
 .logo {
+  cursor: pointer;
   height: 100%;
   display: flex;
   align-items: center;
@@ -65,5 +66,10 @@ nav {
   background-color: var(--accent-color);
   padding: 0.8rem;
   border-radius: 0.5rem;
+}
+
+.auth:hover {
+  transition: 0.2s;
+  background-color: var(--accent-color-hover);
 }
 </style>

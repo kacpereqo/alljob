@@ -69,6 +69,7 @@ class DBClient:
                             "company": 1,
                             "createdAt": 1,
                             "employmentTypes": 1,
+                            "locations": 1,
                         }
                     },
                     {"$sort": {"createdAt": 1}},

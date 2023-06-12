@@ -1,12 +1,48 @@
+
 :root { 
     --main-color:   #08D9D6;
     --second-color: #252A34;
+    --second-color-light: rgb(37, 42, 52, 0.2);
+    --second-color-dark: #171b22;
     --accent-color: #FF2E63;
+    --accent-color-hover: #FF2E63;
 
-    --font-color-light: #ececec;
+
+    --font-color-light: #ffffff;
     --font-color: #d7d7d7;
     --font-color-dark: #c2c2c2;
 
-    --navbar-height: 60px;
+    --navbar-height: 6rem;
+    
+    --spacer-1: 0.2rem;
+    --spacer-2: 0.4rem;
+    --spacer-3: 0.6rem;
+    --spacer-4: 0.8rem;
+    --spacer-5: 1.0rem;
+    --spacer-6: 1.5rem;
+    --spacer-7: 2.0rem;
 
+
+    --border-radius-1: 0.2rem;
+    --border-radius-2: 0.4rem;
+    --border-radius-3: 0.6rem;
+    --border-radius-4: 0.8rem;
+    --border-radius-5: 1.0rem;
+
+    --border-width-1: 0.1rem;
+    --border-width-2: 0.2rem;
+    --border-width-3: 0.3rem;
+    --border-width-3: 0.4rem;
+    --border-width-3: 0.5rem;
+
+    --font-size-1: 0.8rem;
+    --font-size-2: 1.0rem;
+    --font-size-3: 1.2rem;
+    --font-size-4: 1.4rem;
+    --font-size-5: 1.6rem;
+    --font-size-6: 1.8rem;
+    --font-size-7: 2.0rem;
+    --font-size-8: 2.2rem;
+    --font-size-9: 2.4rem;
+    --font-size-10: 2.6rem;
 }
