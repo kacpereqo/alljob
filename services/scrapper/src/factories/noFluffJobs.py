@@ -1,8 +1,9 @@
 import requests
 import ujson
+import locale
 
 from offertFactory import OffertFactory
-from geoUtils import GeoUtils
+from utils.geoUtils import GeoUtils
 
 
 class NoFluffJobs(OffertFactory):
@@ -49,19 +50,19 @@ class NoFluffJobs(OffertFactory):
                 "logo_url": logo_url,
             }
 
-            offert = {
-                "title": offert["title"],
-                "url": url,
-                "company": company_data,
-                "technologies": technologies,
-                "locations": locations,
-                "employmentTypes": employement_types,
-                "seniority": senitorities,
-                "workingMode": offert["salary"]["type"],
-                "description": offert_details["details"]["description"],
-                "languages": languages,
-                "site": "nofluffjobs.com",
-            }
+            offert = OffertFactory.offert_builder(
+                title=offert["title"],
+                url=url,
+                company=company_data,
+                technologies=technologies,
+                locations=locations,
+                employmentTypes=employement_types,
+                seniority=senitorities,
+                workingMode=offert["salary"]["type"],
+                description=offert_details["details"]["description"],
+                languages=languages,
+                site="nofluffjobs.com",
+            )
 
             return offert
 
@@ -92,12 +93,15 @@ class NoFluffJobs(OffertFactory):
             return _languages
 
         def convert_to_pln(salary: dict, currency: str) -> dict:
-            """Convert salary to PLN if not in PLN to allow sorting by salary
+            """
+            Convert salary to PLN
 
-            Keyword arguments:
-            salary -- {from: int, to: int} salary in given currency
-            currency -- currency of salary
-            Return: {from: int, to: int} salary in PLN
+            Arguments:
+                salary {dict} -- salary in format that is used in database
+                currency {str} -- currency of salary
+
+            Returns:
+                dict -- salary in PLN [from, to]
             """
 
             r = requests.get(
@@ -167,6 +171,7 @@ class NoFluffJobs(OffertFactory):
             Returns:
                 list -- list of seniorities in format that is used in database
             """
+
             _seniorities = []
 
             seniorities = offert.get("seniority", None)
@@ -205,32 +210,6 @@ class NoFluffJobs(OffertFactory):
 
             return _technologies
 
-        def _final_location_builder(**kwargs) -> dict:
-            """
-            Build final location dict
-
-            Arguments:
-                **kwargs -- kwargs
-
-            Returns:
-                dict -- final location dict
-            """
-
-            _default_geolocation = {
-                "latitude": None,
-                "longitude": None,
-            }
-
-            final_location = {
-                "country": kwargs.get("country", None),
-                "city": kwargs.get("city", None),
-                "street": kwargs.get("street", None),
-                "postalCode": kwargs.get("postalCode", None),
-                "geoLocation": kwargs.get("geoLocation", _default_geolocation),
-            }
-
-            return final_location
-
         def parse_locations(offert: dict) -> list:
             """
             Parse locations to format that is used in database
@@ -263,7 +242,7 @@ class NoFluffJobs(OffertFactory):
                     country = country.get("name", None)
 
                 if city is None or country is None:
-                    return _final_location_builder()
+                    return geo_u.location_builder()
 
                 geoLocation = location.get("geoLocation", None)
 
@@ -276,7 +255,7 @@ class NoFluffJobs(OffertFactory):
                             "longitude": _cords[1],
                         }
 
-                final_location = _final_location_builder(
+                final_location = geo_u.location_builder(
                     country=country,
                     city=city,
                     street=street,
@@ -285,6 +264,10 @@ class NoFluffJobs(OffertFactory):
                 )
 
                 _locations.append(final_location)
+
+            locale.setlocale(locale.LC_COLLATE, "pl_PL.UTF-8")
+
+            _locations = sorted(_locations, key=lambda k: locale.strxfrm(k["city"]))
 
             return _locations
 

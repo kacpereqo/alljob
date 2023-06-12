@@ -1,18 +1,22 @@
 import requests
 import ujson
+import locale
 
 from offertFactory import OffertFactory
-from geoUtils import GeoUtils
+from utils.geoUtils import GeoUtils
 
 
 class JustJoinOfferts(OffertFactory):
     def get_offerts() -> dict:
         def parse_offert(offert: dict) -> dict:
-            """Parse offerts to format that is used in database to allow inserting to database
+            """
+            Parse offerts to format that is used in database to allow inserting to database
 
-            Keyword arguments:
-            offert -- non parsed offert in JSON format
-            Return: parsed offert in format that is used in database
+            Arguments:
+                offert {dict} -- offert data in json format
+
+            Returns:
+                dict -- offert in format that is used in database
             """
 
             employmentType = parse_employment_type(offert["employment_types"])
@@ -23,57 +27,51 @@ class JustJoinOfferts(OffertFactory):
             )  # [location["city"] for location in offert["multilocation"]]
             url = "https://justjoin.it/offers/" + offert["id"]
 
-            offert = {
-                "title": offert["title"],
-                "url": url,
-                "company": {
+            offert = OffertFactory.offert_builder(
+                title=offert["title"],
+                url=url,
+                company={
                     "name": offert["company_name"],
                     "url": offert["company_url"],
                     "logo_url": offert["company_logo_url"],
                 },
-                "technologies": technologies,
-                "locations": locations,
-                "employmentTypes": employmentType,
-                "seniority": offert["experience_level"],
-                "workingMode": offert["workplace_type"],
-                "description": offert["body"],
-                "site": "justjoin.it",
-            }
+                technologies=technologies,
+                locations=locations,
+                employmentTypes=employmentType,
+                seniority=offert["experience_level"],
+                workingMode=offert["workplace_type"],
+                description=offert["body"],
+                site="justjoin.it",
+            )
+
+            # offert = {
+            #     "title": offert["title"],
+            #     "url": url,
+            #     "company": {
+            #         "name": offert["company_name"],
+            #         "url": offert["company_url"],
+            #         "logo_url": offert["company_logo_url"],
+            #     },
+            #     "technologies": technologies,
+            #     "locations": locations,
+            #     "employmentTypes": employmentType,
+            #     "seniority": offert["experience_level"],
+            #     "workingMode": offert["workplace_type"],
+            #     "description": offert["body"],
+            #     "site": "justjoin.it",
+            # }
 
             return offert
 
-        def _final_location_builder(**kwargs) -> dict:
+        def parse_locations(offert: dict) -> list:
             """
-            Build final location dict
+            Parse locations to format that is used in database
 
             Arguments:
-                **kwargs -- kwargs
+                offert {dict} -- offert data in json format
 
             Returns:
-                dict -- final location dict
-            """
-
-            _default_geolocation = {
-                "latitude": None,
-                "longitude": None,
-            }
-
-            final_location = {
-                "country": kwargs.get("country", None),
-                "city": kwargs.get("city", None),
-                "street": kwargs.get("street", None),
-                "postalCode": kwargs.get("postalCode", None),
-                "geoLocation": kwargs.get("geoLocation", _default_geolocation),
-            }
-
-            return final_location
-
-        def parse_locations(offert: dict) -> list:
-            """Parse locations to format that is used in database
-
-            Keyword arguments:
-            offert -- offert data in json format
-            Return: list of locations in format that is used in database
+                list -- list of locations in format that is used in database
             """
 
             geo_u = GeoUtils()
@@ -94,7 +92,7 @@ class JustJoinOfferts(OffertFactory):
                 geoLocation = geo_u.city_to_coords(city_name=city, country=country)
 
                 _locations.append(
-                    _final_location_builder(
+                    geo_u.location_builder(
                         country=country,
                         city=city,
                         street=street,
@@ -102,14 +100,21 @@ class JustJoinOfferts(OffertFactory):
                     )
                 )
 
+            locale.setlocale(locale.LC_COLLATE, "pl_PL.UTF-8")
+
+            _locations = sorted(_locations, key=lambda k: locale.strxfrm(k["city"]))
+
             return _locations
 
         def parse_employment_type(employment_types):
-            """parse employment types to format that is used in database
+            """
+            Parse employment types to format that is used in database
 
-            Keyword arguments:
-            employment_types -- description of employment types in JSON format
-            Return: parsed employment types in format that is used in database
+            Arguments:
+                employment_types {list} -- list of employment types
+
+            Returns:
+                list -- list of employment types in format that is used in database
             """
 
             result = []
@@ -141,12 +146,15 @@ class JustJoinOfferts(OffertFactory):
             return result
 
         def convert_to_pln(salary: dict, currency: str) -> dict:
-            """Convert salary to PLN if not in PLN to allow sorting by salary
+            """
+            Convert salary to PLN
 
-            Keyword arguments:
-            salary -- {from: int, to: int} salary in given currency
-            currency -- currency of salary
-            Return: {from: int, to: int} salary in PLN
+            Arguments:
+                salary {dict} -- salary in format that is used in database
+                currency {str} -- currency of salary
+
+            Returns:
+                dict -- salary in PLN [from, to]
             """
 
             r = requests.get(
