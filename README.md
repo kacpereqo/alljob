@@ -23,7 +23,7 @@ This part of the code is responsible for downloading offers from the following w
  - [x] nofluffjobs.com
  - [x] justjoin.it
  - [ ] it.pracuj.pl
- - [ ] bulldogjob.pl
+ - [x] bulldogjob.pl
  
 downloaded data is serialized and sent to the MongoDB database.
 
