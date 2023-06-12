@@ -82,5 +82,5 @@ class DBClient:
 
         return list(self.db.offerts.offerts.aggregate(query))
 
-    def get_detailed_offert(self, offert_id: str) -> dict:
+    def get_offert_details(self, offert_id: str) -> dict:
         return self.db.offerts.offerts.find_one({"_id": ObjectId(offert_id)})

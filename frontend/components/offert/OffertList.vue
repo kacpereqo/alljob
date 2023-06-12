@@ -15,9 +15,8 @@ const { data } = await useFetch<LeadingOffert[]>(API_URL + "/leading", {
 
 <style scoped>
 .offert-list-wrapper {
+  flex: 1;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
   grid-gap: 1rem;
-  padding: 1rem;
 }
 </style>

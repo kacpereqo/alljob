@@ -14,3 +14,8 @@ def get_leading_offerts(
     filters: Filtering | None = None,
 ) -> JSONResponse:
     return DB.get_leading_offerts(offset, limit, sorting, filters)
+
+
+@router.get("/details/{offert_id}")
+def get_offert_details(offert_id: str) -> JSONResponse:
+    return DB.get_offert_details(offert_id)

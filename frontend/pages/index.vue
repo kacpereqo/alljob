@@ -1,5 +1,5 @@
 <template>
-  <div class="index-wrapper">
+  <div class="offert-list">
     <FilterList />
     <OffertList />
   </div>
@@ -7,12 +7,9 @@
 
 <script setup lang="ts"></script>
 
-<style scoped>
-.index-wrapper {
+<style>
+.offert-list {
   display: flex;
-  flex-direction: column;
-  background-color: var(--second-color-light);
-  border-radius: var(--border-radius-2);
-  overflow: hidden;
+  gap: 1rem;
 }
 </style>

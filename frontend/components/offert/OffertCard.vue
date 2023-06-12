@@ -1,5 +1,5 @@
 <template>
-  <div class="offert-card-wrapper">
+  <div class="offert-card-wrapper" @click="getMoreDetails">
     <div class="heading">
       <div class="logo">
         <img :src="props.offert.company.logo_url" />
@@ -17,9 +17,15 @@
 </template>
 
 <script setup lang="ts">
+const router = useRouter();
+
 const props = defineProps<{
   offert: LeadingOffert;
 }>();
+
+function getMoreDetails() {
+  router.push(`/offert/${props.offert._id}`);
+}
 </script>
 
 <style scoped>
@@ -29,6 +35,7 @@ const props = defineProps<{
   flex-direction: column;
   background-color: var(--second-color);
   border-radius: var(--border-radius-2);
+  cursor: pointer;
 }
 
 .company-info {
@@ -71,6 +78,6 @@ const props = defineProps<{
 }
 
 .info .work-title {
-  font-size: var(--font-size-3);
+  font-size: var(--font-size-4);
 }
 </style>

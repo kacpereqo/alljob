@@ -54,14 +54,6 @@ function setBoxShadow() {
 
   leftShadow = carousel.value.scrollLeft !== 0;
 
-  if (leftShadow && rightShadow) {
-    carousel.value.style.transition = "none";
-    carousel.value.classList.add("shadow-both");
-  } else {
-    carousel.value.style.transition = "0.2s ease-in-out";
-    carousel.value.classList.remove("shadow-both");
-  }
-
   if (leftShadow) {
     carousel.value.classList.add("shadow-left");
   } else {
@@ -73,6 +65,12 @@ function setBoxShadow() {
   } else {
     carousel.value.classList.remove("shadow-right");
   }
+
+  if (leftShadow && rightShadow) {
+    carousel.value.classList.add("shadow-both");
+  } else {
+    carousel.value.classList.remove("shadow-both");
+  }
 }
 
 function dragEndHandler() {
@@ -83,16 +81,25 @@ function dragEndHandler() {
 
 onMounted(() => {
   setBoxShadow();
+  if (!carousel.value || !items.value) return;
+  if (
+    carousel.value.scrollLeft + carousel.value.offsetWidth <
+    items.value.offsetWidth
+  ) {
+    carousel.value.style.cursor = "grab";
+  } else {
+    carousel.value.style.cursor = "default";
+  }
 });
 </script>
 
 <style scoped>
 .technologies {
+  --_height: 4rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   user-select: none;
-  --_height: 4rem;
   overflow: hidden;
   position: relative;
   padding-top: calc(var(--spacer-3) + var(--border-width-2));
@@ -100,23 +107,21 @@ onMounted(() => {
   border-top: var(--border-width-1) solid var(--font-color-dark);
   margin-top: var(--spacer-3);
   height: var(--_height);
-  cursor: grab;
   box-shadow: 0 4px 0px 0px var(--second-color),
     0 -4px 0px 0px var(--second-color);
-  transition: 0.1s ease-in-out;
+  transition: 0.3s ease-in-out;
 }
 
 .shadow-right {
-  box-shadow: inset -10px 0 2px -2px rgba(0, 0, 0, 0.3);
+  box-shadow: inset -8px 0 16px -2px rgba(0, 0, 0, 0.4);
 }
 
 .shadow-both {
-  box-shadow: inset 10px 0 2px -2px rgba(0, 0, 0, 0.3),
-    inset -10px 0 2px -2px rgba(0, 0, 0, 0.3) !important;
+  box-shadow: inset -8px 0 16px -2px rgba(0, 0, 0, 0.4),
+    inset 8px 0 16px -2px rgba(0, 0, 0, 0.4) !important;
 }
-
 .shadow-left {
-  box-shadow: inset 10px 0 2px -2px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 8px 0 16px -2px rgba(0, 0, 0, 0.4);
 }
 
 .technologies div {
