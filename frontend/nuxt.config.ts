@@ -22,4 +22,7 @@ export default defineNuxtConfig({
     inlineSSRStyles: false,
     renderJsonPayloads: true,
   },
+  nitro: {
+    compressPublicAssets: true,
+  },
 });
