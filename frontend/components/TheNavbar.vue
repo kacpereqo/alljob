@@ -1,7 +1,9 @@
 <template>
   <nav>
     <div class="logo">
-      <img src="@/assets/icons/logo.svg" alt="logo" />
+      <NuxtLink to="/">
+        <img src="@/assets/icons/logo.svg" alt="logo" />
+      </NuxtLink>
     </div>
     <div class="links">
       <ul>
@@ -30,8 +32,21 @@ nav {
 .logo {
   cursor: pointer;
   height: 100%;
+  width: 8rem;
   display: flex;
   align-items: center;
+}
+
+.logo img {
+  width: 100%;
+}
+
+.logo a {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .links ul {

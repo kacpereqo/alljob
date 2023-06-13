@@ -1,10 +1,31 @@
 <template>
-  <div class="lined-button-wrapper">
+  <div
+    ref="button"
+    class="lined-button-wrapper"
+    :style="`--duration: ${animationDuration};`"
+    @mouseover="mouseHander"
+  >
     <span>
       <slot />
     </span>
   </div>
 </template>
+
+<script setup lang="ts">
+const button = ref(null);
+
+const animationDuration = ref("0.0s");
+
+let timeout: ReturnType<typeof setTimeout>;
+
+function mouseHander() {
+  animationDuration.value = "0.2s";
+  if (timeout) clearTimeout(timeout);
+  timeout = setTimeout(() => {
+    animationDuration.value = "0.0s";
+  }, 400);
+}
+</script>
 
 <style scoped>
 .lined-button-wrapper {
@@ -41,19 +62,20 @@ span:hover {
 }
 
 .lined-button-wrapper::before {
-  animation: disappear 0.2s ease-in-out forwards;
+  animation: disappear var(--duration) ease-in-out forwards;
   position: absolute;
   content: "";
   height: 0;
   width: 100%;
   bottom: 0;
+  left: 100%;
   border-radius: var(--border-radius-1);
   border: var(--border-width-3) solid var(--accent-color);
   border-right: none;
   border-left: none;
 }
 .lined-button-wrapper:hover::before {
-  animation: appear 0.2s ease-in-out forwards;
+  animation: appear var(--duration) ease-in-out forwards;
 }
 
 @keyframes appear {
