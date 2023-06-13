@@ -29,6 +29,7 @@
 .filter-buttons ul {
   display: flex;
   gap: 3rem;
+  height: var(--filterbar-height);
 }
 
 .filter-wrapper {

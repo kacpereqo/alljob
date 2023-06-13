@@ -1,10 +1,12 @@
 <template>
   <div class="detailed-wrapper">
-    <div class="header">
-      <div class="title">
-        {{ data.title }}
+    <div ref="fixedContainer" class="fixed">
+      <div class="header">
+        <div class="title">
+          {{ data.title }}
+        </div>
+        <div class="description" v-html="data.description"></div>
       </div>
-      <div class="description" v-html="data.description"></div>
     </div>
   </div>
 </template>
@@ -16,6 +18,27 @@ const id = route.params.id;
 const ENV = useRuntimeConfig().public;
 const API_URL = ENV.API_URL;
 
+const fixedContainer = ref<HTMLElement | null>(null);
+let top = 0;
+
+function scrollHandler() {
+  if (!fixedContainer.value) return;
+  const newTop = top - window.scrollY;
+  const marginTop = 10;
+
+  if (newTop < marginTop) {
+    fixedContainer.value.style.top = marginTop + "px";
+  } else {
+    fixedContainer.value.style.top = newTop + "px";
+  }
+}
+
+onMounted(() => {
+  document.addEventListener("scroll", scrollHandler);
+  if (!fixedContainer.value) return;
+  top = fixedContainer.value.offsetTop;
+});
+
 const { data } = await useFetch(API_URL + "/details/" + id, {
   method: "GET",
 });
@@ -25,12 +48,26 @@ const { data } = await useFetch(API_URL + "/details/" + id, {
 .detailed-wrapper {
   display: flex;
   flex-direction: column;
-  background-color: var(--second-color);
-  border-radius: var(--border-radius-2);
   overflow: hidden;
   flex: 1;
-  height: 100%;
+
+  position: relative;
+}
+
+.fixed {
+  --_top: calc(
+    var(--navbar-height) + var(--spacer-5) * 7 + var(--filterbar-height)
+  );
   padding: var(--spacer-5);
+  background-color: var(--second-color);
+  border-radius: var(--border-radius-2);
+  top: var(--_top);
+  bottom: 0;
+  margin-right: var(--spacer-7);
+  position: fixed;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  scrollbar-width: thin;
 }
 
 .title {
@@ -42,9 +79,10 @@ const { data } = await useFetch(API_URL + "/details/" + id, {
 .description {
   font-size: var(--font-size-6);
   margin-top: var(--spacer-3);
-  /* color: var(--font-color-light); */
 }
-.description ul li {
+
+.description ul {
+  margin-left: var(--spacer-6);
   list-style: circle;
 }
 </style>

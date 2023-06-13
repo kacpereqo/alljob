@@ -20,7 +20,7 @@
 nav {
   background-color: var(--second-color);
   color: var(--font-color);
-  height: 6rem;
+  height: var(--navbar-height);
   width: 100%;
   display: flex;
   justify-content: space-between;
