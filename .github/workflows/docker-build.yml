@@ -34,7 +34,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          push: false
+          push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/alljob-backend:${{ github.sha }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
