@@ -8,10 +8,6 @@ Alljob is a it job offers aggregator
 - [Python 3.10](https://www.python.org/downloads/release/python-31011/)
 - [Poetry](https://github.com/python-poetry/poetry)
 - [Node](https://github.com/nodejs/node)
-
-- poetry / pip
-- python 3.10
-- node
 - working internet connection
 
 
