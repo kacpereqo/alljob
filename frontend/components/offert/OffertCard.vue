@@ -14,7 +14,9 @@
         </div>
         <div class="more-info">
           <OffertLocations :locations="offert.locations" />
-          <!-- <span class="salary">{{ props.offert }}</span> -->
+          <!-- <JobProvider :provider="offert.site" /> -->
+          <WorkingMode :working-mode="offert.workingMode" />
+          <JobSeniority :seniority="offert.seniority" />
         </div>
       </div>
     </div>
@@ -23,6 +25,8 @@
 </template>
 
 <script setup lang="ts">
+import JobSeniority from "./JobSeniority.vue";
+
 const props = defineProps<{
   offert: LeadingOffert;
 }>();

@@ -1,5 +1,3 @@
-from time import sleep
-
 from database.db import DB
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
@@ -20,7 +18,6 @@ def get_leading_offerts(
 
 @router.get("/details/{offert_id}")
 def get_offert_details(offert_id: str) -> JSONResponse:
-    sleep(1)
     return DB.get_offert_details(offert_id)
 
 

@@ -3,28 +3,12 @@
     <FilterList />
     <div class="offert-list">
       <OffertList />
-      <div v-if="displayChild" class="detailed-offert" @loaded="loaded = true">
-        <LoadingIndicator v-if="!loaded" />
-        <NuxtPage />
-      </div>
+      <NuxtPage />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-const router = useRouter();
-const displayChild = ref(false);
-const loaded = ref(false);
-
-watch(
-  () => router.currentRoute.value.params,
-  (params) => {
-    if (params.id) {
-      displayChild.value = true;
-    }
-  }
-);
-
 useHead({
   title: "oferty pracy",
 });
