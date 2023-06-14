@@ -19,3 +19,8 @@ def get_leading_offerts(
 @router.get("/details/{offert_id}")
 def get_offert_details(offert_id: str) -> JSONResponse:
     return DB.get_offert_details(offert_id)
+
+
+@router.get("/count")
+def get_offerts_count() -> JSONResponse:
+    return DB.get_offerts_count()

@@ -84,3 +84,6 @@ class DBClient:
 
     def get_offert_details(self, offert_id: str) -> dict:
         return self.db.offerts.offerts.find_one({"_id": ObjectId(offert_id)})
+
+    def get_offerts_count(self) -> int:
+        return self.db.offerts.offerts.count_documents({})
