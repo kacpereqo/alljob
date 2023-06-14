@@ -6,19 +6,26 @@
       :offert="offert"
       @click="getMoreDetails(offert._id)"
     />
-    <div v-if="pending" class="pending">
-      <LoadingIndicator />
-      <span> Fetching Data </span>
+    <div class="request-states">
+      <div v-if="pending && !error" class="pending">
+        <LoadingIndicator />
+        <span> Fetching Data </span>
+      </div>
+      <div v-if="error" class="error">
+        {{ getReasonPhrase(error.statusCode!) }} {{ error.statusCode }}
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { getReasonPhrase } from "http-status-codes";
+
 const ENV = useRuntimeConfig().public;
 const API_URL = ENV.API_URL;
 const router = useRouter();
 const pending = ref(false);
-const { data: offerts } = await fetchMoreOfferts(0, 10);
+const { data: offerts, error } = await fetchMoreOfferts(0, 10);
 
 let currentOffertID = "";
 const limit = 20;
@@ -45,18 +52,22 @@ function getMoreDetails(OffertID: string) {
 }
 
 async function scrollHandler() {
-  console.log(ENV);
+  // console.log(ENV);
   const scrollHeight = document.documentElement.scrollHeight;
   const scrollTop = document.documentElement.scrollTop;
   const clientHeight = document.documentElement.clientHeight;
 
-  if (scrollTop + clientHeight >= scrollHeight) {
+  if (scrollTop + clientHeight >= scrollHeight - 500) {
     if (pending.value) return;
     if (!offerts.value) return;
 
     pending.value = true;
 
-    const { data, error } = await fetchMoreOfferts(offerts.value.length, limit);
+    const { data, error: newError } = await fetchMoreOfferts(
+      offerts.value.length,
+      limit
+    );
+    error.value = newError.value;
     offerts.value = [...offerts.value, ...(data.value as [])];
 
     pending.value = false;
@@ -79,14 +90,17 @@ onUnmounted(() => {
   grid-gap: 1rem;
 }
 
+.error {
+  text-align: center;
+  font-size: var(--font-size-6);
+}
+
 .pending {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  height: 100%;
+  justify-content: center;
   gap: var(--spacer-7);
-  font-size: var(--font-size-4);
-  padding: var(--spacer-5);
+  font-size: var(--font-size-5);
 }
 </style>
