@@ -1,4 +1,6 @@
 import uvicorn
+import os
+
 from config import import_routers
 from dotenv import dotenv_values
 from fastapi import FastAPI
@@ -26,9 +28,8 @@ app = get_app()
 
 
 if __name__ == "__main__":
-    env = dotenv_values()
 
-    host = env.get("HOST", "8080")
-    port = int(env.get("PORT", "8080"))
+    host = os.environ.get("HOST", "0.0.0.0")
+    port = int(os.environ.get("PORT", "8080"))
 
-    uvicorn.run("main:app", host=host, port=port, reload=True)
+    uvicorn.run("main:app", host=host, port=port)

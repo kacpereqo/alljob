@@ -2,10 +2,11 @@ from datetime import datetime
 from typing import List
 
 import pydantic
+import os
+
 from bson import ObjectId
 from common.schemas.offerts import Filtering, Sorting
 from database.queryCreator import sorting_query_creator
-from dotenv import dotenv_values
 from pymongo import MongoClient, UpdateOne
 
 
@@ -13,11 +14,7 @@ class DBClient:
     def __init__(self) -> None:
         pydantic.json.ENCODERS_BY_TYPE[ObjectId] = str
 
-        print("Initializing DBClient")
-
-        env = dotenv_values()
-
-        DB_URI = env.get("DB_URI", None)
+        DB_URI = os.environ.get("DB_URI", None)
         if DB_URI is None:
             raise Exception("DB_URI is not defined")
 
