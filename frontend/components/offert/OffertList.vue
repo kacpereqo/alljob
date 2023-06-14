@@ -52,7 +52,7 @@ function getMoreDetails(OffertID: string) {
 }
 
 async function scrollHandler() {
-  // console.log(ENV);
+  console.log(ENV);
   const scrollHeight = document.documentElement.scrollHeight;
   const scrollTop = document.documentElement.scrollTop;
   const clientHeight = document.documentElement.clientHeight;
