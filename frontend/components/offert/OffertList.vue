@@ -22,6 +22,7 @@
 import { getReasonPhrase } from "http-status-codes";
 
 const ENV = useRuntimeConfig().public;
+console.log(ENV);
 const API_URL = ENV.API_URL;
 const router = useRouter();
 const pending = ref(false);
@@ -52,7 +53,6 @@ function getMoreDetails(OffertID: string) {
 }
 
 async function scrollHandler() {
-  console.log(ENV);
   const scrollHeight = document.documentElement.scrollHeight;
   const scrollTop = document.documentElement.scrollTop;
   const clientHeight = document.documentElement.clientHeight;
