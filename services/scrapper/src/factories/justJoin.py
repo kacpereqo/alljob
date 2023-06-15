@@ -183,7 +183,7 @@ class JustJoinOfferts(OffertFactory):
         json = ujson.loads(r.text)
 
         parsed_offerts = []
-        for i, offert in enumerate(json[:10]):
+        for i, offert in enumerate(json[:100]):
             detailed_offert = get_details(
                 "https://justjoin.it/api/offers/" + offert["id"]
             )
