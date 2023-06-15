@@ -36,4 +36,4 @@ FROM python-base as production
 COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
 COPY ./services/backend/src /services/backend/src/
 WORKDIR /services/backend/src
-CMD ["python", "main.py"]
+CMD ["python","main.py"]

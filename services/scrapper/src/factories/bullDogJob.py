@@ -1,6 +1,9 @@
 import requests
 import ujson
 import locale
+import time
+
+from bs4 import BeautifulSoup
 
 from offertFactory import OffertFactory
 from utils.geoUtils import GeoUtils
@@ -75,11 +78,17 @@ class BullDogJob(OffertFactory):
                 )
 
                 json = ujson.loads(r.text)
-                rate = json["rates"][0]["mid"]
+                rate = json["rates"][0].get("mid", 0)
+
+                if salary["from"] is not None and salary["to"] is not None:
+                    return {
+                        "from": round(salary["from"] * rate, -1),
+                        "to": round(salary["to"] * rate, -1),
+                    }
 
                 return {
-                    "from": round(salary["from"] * rate, -1),
-                    "to": round(salary["to"] * rate, -1),
+                    "from": 0,
+                    "to": 0,
                 }
 
             employment_types = []
@@ -131,6 +140,49 @@ class BullDogJob(OffertFactory):
 
             return employment_types
 
+        def parse_description(offert: dict) -> str:
+            url = "https://bulldogjob.pl/companies/jobs/" + offert.get("id", None)
+
+            try:
+                r = requests.get(url)
+            except requests.exceptions.ConnectTimeout:
+                time.sleep(3)
+
+            if r.status_code != 200:
+                time.sleep(2)
+                return None
+
+            soup = BeautifulSoup(r.text, "html.parser")
+            # description = soup.select(
+            #     "dev",
+            #     class_=re.compile(
+            #         "content list--check mt-6 -mb-6",
+            #         re.IGNORECASE,
+            #     ),
+            # )
+
+            description = soup.find_all(
+                "div",
+                class_=["content", "list--check", "mt-6", "-mb-6"],
+            )
+
+            # description = soup.find_all(
+            #     "div",
+            #     class_="bg-white rounded-lg px-6 md:px-10 py-6 md:py-10 mb-4",
+            # )
+
+            print(description)
+
+            if description is None or not description:
+                return None
+
+            print(description)
+
+            description = description[0]
+            description = str(description.parent)
+
+            return description
+
         def parse_experienceLevel(offert: dict) -> str:
             d = {
                 "junior": "junior",
@@ -163,6 +215,7 @@ class BullDogJob(OffertFactory):
             employement_types = parse_employment_type(offert=offert)
             seniorities = parse_experienceLevel(offert=offert)
             working_modes = parse_working_mode(offert=offert)
+            description = parse_description(offert=offert)
 
             company_data = {
                 "name": offert["company"].get("name", None),
@@ -179,7 +232,7 @@ class BullDogJob(OffertFactory):
                 employmentTypes=employement_types,
                 seniorities=seniorities,
                 workingMode=working_modes,
-                description=None,
+                description=description,
                 languages=None,
                 site="bulldogjob.com",
             )

@@ -286,7 +286,7 @@ class NoFluffJobs(OffertFactory):
 
         offerts_length = len(json["postings"])
 
-        for idx, offert in enumerate(json["postings"][:10]):
+        for idx, offert in enumerate(json["postings"][:100]):
             parsed_offert = parse_offert(offert)
             if parsed_offert is not None:
                 parsed_offerts.append(parsed_offert)
