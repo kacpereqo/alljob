@@ -22,7 +22,6 @@
 import { getReasonPhrase } from "http-status-codes";
 
 const ENV = useRuntimeConfig().public;
-console.log(ENV);
 const API_URL = ENV.API_URL;
 const router = useRouter();
 const pending = ref(false);
@@ -75,7 +74,7 @@ async function scrollHandler() {
 }
 
 onMounted(() => {
-console.log(ENV);
+  console.log(ENV);
 
   window.addEventListener("scroll", scrollHandler);
 });
