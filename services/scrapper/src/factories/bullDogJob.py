@@ -143,44 +143,32 @@ class BullDogJob(OffertFactory):
         def parse_description(offert: dict) -> str:
             url = "https://bulldogjob.pl/companies/jobs/" + offert.get("id", None)
 
-            try:
-                r = requests.get(url)
-            except requests.exceptions.ConnectTimeout:
-                time.sleep(3)
+            iters = 0
+            passed = False
+            r = None
 
-            if r.status_code != 200:
-                time.sleep(2)
+            while iters < 3 or not passed:
+                try:
+                    r = requests.get(url, timeout=1)
+                    if r.status_code == 200:
+                        passed = True
+                except requests.exceptions.RequestException:
+                    time.sleep(1)
+
+                iters += 1
+
+            if r is None or r.status_code != 200 or not passed:
                 return None
 
             soup = BeautifulSoup(r.text, "html.parser")
-            # description = soup.select(
-            #     "dev",
-            #     class_=re.compile(
-            #         "content list--check mt-6 -mb-6",
-            #         re.IGNORECASE,
-            #     ),
-            # )
-
             description = soup.find_all(
-                "div",
-                class_=["content", "list--check", "mt-6", "-mb-6"],
+                "div", class_=["content", "list--check", "mt-6", "-mb-6"]
             )
 
-            # description = soup.find_all(
-            #     "div",
-            #     class_="bg-white rounded-lg px-6 md:px-10 py-6 md:py-10 mb-4",
-            # )
-
-            print(description)
-
-            if description is None or not description:
+            if not description:
                 return None
 
-            print(description)
-
-            description = description[0]
-            description = str(description.parent)
-
+            description = str(description[0].parent)
             return description
 
         def parse_experienceLevel(offert: dict) -> str:
@@ -352,7 +340,7 @@ class BullDogJob(OffertFactory):
 
         parsed_offerts = []
 
-        for idx, offert in enumerate(offerts):
+        for idx, offert in enumerate(offerts[:100]):
             parsed_offert = parse_offert(offert)
             if parsed_offert is not None:
                 parsed_offerts.append(parsed_offert)
