@@ -26,12 +26,12 @@ class DBClient:
         print("DBClient initialized")
 
     def migrate(self) -> None:
-        self.db.offerts.offerts.create_index(
+        self.db.offerts.dev.create_index(
             [("title", 1), ("company.name", 1)], unique=True
         )
 
     def insert_offerts(self, offerts: list) -> None:
-        self.db.offerts.offerts.bulk_write(
+        self.db.offerts.dev.bulk_write(
             [
                 UpdateOne(
                     {

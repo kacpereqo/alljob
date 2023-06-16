@@ -28,9 +28,7 @@ class DBClient:
             [("title", 1), ("company.name", 1)], unique=True
         )
 
-        self.db.offerts.offerts.create_index(
-            [("title", "text"), ("description", "text")]
-        )
+        # self.db.offerts.offerts.create_index([("title", "text"), ("description", "text")])
 
     def insert_offerts(self, offerts: list) -> None:
         self.db.offerts.offerts.bulk_write(
@@ -91,15 +89,77 @@ class DBClient:
         return self.db.offerts.offerts.count_documents({})
 
     def search_for_offerts(self, query: str) -> list:
+        #
+        #   THE OLD WAY SEARCHER
+        #
+
+        # filter = {"$text": {"$search": query}}
+        # project = {"score": {"$meta": "textScore"}}
+        # result = self.client["offerts"]["offerts"].find(
+        #     filter=filter, projection=project
+        # )
+        # result.sort([("score", {"$meta": "textScore"})])
+
+        # return list(result)
+
         if query is None or query == "":
             print("Query is empty")
             return []
 
-        filter = {"$text": {"$search": query}}
-        project = {"score": {"$meta": "textScore"}}
-        result = self.client["offerts"]["offerts"].find(
-            filter=filter, projection=project
+        result = self.db.offerts.offerts.aggregate(
+            [
+                {
+                    "$search": {
+                        "index": "offert_search",
+                        "text": {
+                            "query": query,
+                            "path": ["title", "description"],
+                            "fuzzy": {
+                                "maxEdits": 2,
+                            },
+                        },
+                    }
+                },
+                {
+                    "$project": {
+                        "technologies": 1,
+                        "title": 1,
+                        "company": 1,
+                        "createdAt": 1,
+                        "employmentTypes": 1,
+                        "locations": 1,
+                    }
+                },
+            ]
         )
-        result.sort([("score", {"$meta": "textScore"})])
+
+        return list(result)
+
+    def search_autocomplete(self, query: str) -> list:
+        result = self.db.offerts.offerts.aggregate(
+            [
+                {
+                    "$search": {
+                        "index": "offert_search",
+                        "autocomplete": {
+                            "query": query,
+                            "path": "title",
+                            "tokenOrder": "sequential",
+                            "fuzzy": {},
+                        },
+                    }
+                },
+                {
+                    "$project": {
+                        "_id": 0,
+                        "technologies": 1,
+                        "title": 1,
+                    }
+                },
+                {
+                    "$limit": 10,
+                },
+            ]
+        )
 
         return list(result)

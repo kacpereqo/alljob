@@ -29,3 +29,8 @@ def get_offerts_count() -> JSONResponse:
 @router.get("/search/{query}")
 def search_for_offerts(query: str) -> JSONResponse:
     return DB.search_for_offerts(query)
+
+
+@router.get("/ac/{query}")
+def search_autocomplete(query: str) -> JSONResponse:
+    return DB.search_autocomplete(query)
