@@ -2,7 +2,10 @@
   <div class="offert-card-wrapper">
     <div class="heading">
       <div class="logo">
-        <img :src="props.offert.company.logo_url" />
+        <img
+          :src="props.offert.company.logo_url"
+          :alt="props.offert.company.name + 'logo'"
+        />
       </div>
       <div class="info">
         <div class="company-info">

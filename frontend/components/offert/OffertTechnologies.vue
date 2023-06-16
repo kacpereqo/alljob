@@ -1,5 +1,10 @@
 <template>
-  <div ref="carousel" class="technologies" @mousedown="dragStartHandler">
+  <div
+    ref="carousel"
+    class="technologies"
+    @mousedown="dragStartHandler"
+    @click.prevent.stop
+  >
     <div ref="items">
       <span v-for="(tech, i) in props.technologies" :key="i" class="technology">
         {{ tech }}

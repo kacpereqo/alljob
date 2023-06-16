@@ -1,7 +1,6 @@
 export default defineNuxtConfig({
   ssr: true,
   modules: ["nuxt-icon", "@vueuse/nuxt"],
-  plugins: ["~/plugins/directives.ts"],
   devtools: { enabled: true },
   components: [
     {

@@ -34,9 +34,11 @@ function scrollHandler() {
 }
 
 onMounted(() => {
+  if (fixedContainer.value) {
+    top = fixedContainer.value.offsetTop;
+  }
+  scrollHandler();
   document.addEventListener("scroll", scrollHandler);
-  if (!fixedContainer.value) return;
-  top = fixedContainer.value.offsetTop;
 });
 
 const { data } = await useFetch(API_URL + "/details/" + id, {
