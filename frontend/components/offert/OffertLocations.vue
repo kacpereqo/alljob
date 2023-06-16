@@ -1,7 +1,8 @@
 <template>
   <div
     class="offert-location-wrapper"
-    @click="showAll = !showAll && props.locations.length - 1 > 0"
+    :style="{ cursor: props.locations.length > 1 ? 'pointer' : 'auto' }"
+    @click.stop.prevent="showAll = !showAll && props.locations.length - 1 > 0"
   >
     <div class="less-locations">
       <Icon name="material-symbols:location-on-outline-rounded" />
@@ -17,6 +18,12 @@
           <span> {{ location }}</span>
         </li>
       </ul>
+      <div class="close">
+        <Icon
+          name="material-symbols:cancel-outline-rounded"
+          @click.stop.prevent="showAll = false"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -33,6 +40,18 @@ const showAll = ref(false);
 </script>
 
 <style scoped>
+.close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  color: var(--font-color-dark);
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: var(--font-color-light);
+}
 .offert-location-wrapper {
   flex: 0;
   position: relative;
@@ -45,9 +64,17 @@ const showAll = ref(false);
 .less-locations {
   display: flex;
   gap: 0.5rem;
+  background-color: var(--second-color-dark);
+  padding: var(--spacer-2);
+  padding-right: var(--spacer-3);
+  width: fit-content;
+  border-radius: var(--border-radius-2);
+  align-items: center;
+  justify-content: center;
 }
 
 .more-locations {
+  position: relative;
   display: flex;
   flex-direction: column;
   position: absolute;
@@ -55,9 +82,11 @@ const showAll = ref(false);
   left: 0;
   z-index: 10;
   width: 100%;
+  cursor: auto;
   font-size: var(--font-size-4);
   background-color: var(--second-color);
   padding: var(--spacer-5);
+  padding-right: var(--spacer-10);
   box-shadow: 0px 5px 3px 0px rgba(0, 0, 0, 0.75);
   width: min-content;
 }

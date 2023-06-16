@@ -74,8 +74,6 @@ async function scrollHandler() {
 }
 
 onMounted(() => {
-  console.log(ENV);
-
   window.addEventListener("scroll", scrollHandler);
 });
 
