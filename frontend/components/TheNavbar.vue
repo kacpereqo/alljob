@@ -2,7 +2,7 @@
   <nav>
     <div class="logo">
       <NuxtLink to="/">
-        <img src="@/assets/icons/logo.svg" alt="logo" />
+        <img src="@/assets/icons/logo.svg" alt="alljob logo" />
       </NuxtLink>
     </div>
     <div class="links">

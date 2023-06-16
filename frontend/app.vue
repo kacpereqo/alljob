@@ -6,7 +6,23 @@
   </div>
 </template>
 
-<script></script>
+<script setup>
+useHead({
+  htmlAttrs: {
+    lang: "pl",
+  },
+  title: "NULL",
+  titleTemplate: (titleChunk) => {
+    return titleChunk ? `alljob - ${titleChunk} ` : "alljob";
+  },
+  meta: [
+    {
+      name: "description",
+      content: "Serwis agregacyjny ofert pracy i nie tylko blowjob",
+    },
+  ],
+});
+</script>
 
 <style>
 @import url("assets/style/main.css");
