@@ -23,10 +23,7 @@ pymongo = "^4.3.3"
 pymongo = "^4.3.3"
 pycountry = "^22.3.5"
 geopy = "^2.3.0"
-graphene = "^3.2.2"
-
-
-[tool.poetry.group.add.dependencies]
+beautifulsoup4 = "^4.12.2"
 
 [build-system]
 requires = ["poetry-core"]

@@ -24,3 +24,8 @@ def get_offert_details(offert_id: str) -> JSONResponse:
 @router.get("/count")
 def get_offerts_count() -> JSONResponse:
     return DB.get_offerts_count()
+
+
+@router.get("/search/{query}")
+def search_for_offerts(query: str) -> JSONResponse:
+    return DB.search_for_offerts(query)

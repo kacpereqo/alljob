@@ -27,6 +27,10 @@ class DBClient:
             [("title", 1), ("company.name", 1)], unique=True
         )
 
+        self.db.offerts.offerts.create_index(
+            [("title", "text"), ("description", "text")]
+        )
+
     def insert_offerts(self, offerts: list) -> None:
         self.db.offerts.offerts.bulk_write(
             [
@@ -84,3 +88,17 @@ class DBClient:
 
     def get_offerts_count(self) -> int:
         return self.db.offerts.offerts.count_documents({})
+
+    def search_for_offerts(self, query: str) -> list:
+        if query is None or query == "":
+            print("Query is empty")
+            return []
+
+        filter = {"$text": {"$search": query}}
+        project = {"score": {"$meta": "textScore"}}
+        result = self.client["offerts"]["offerts"].find(
+            filter=filter, projection=project
+        )
+        result.sort([("score", {"$meta": "textScore"})])
+
+        return list(result)
