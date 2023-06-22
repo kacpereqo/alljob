@@ -53,6 +53,7 @@ const showAll = ref(false);
   color: var(--font-color-light);
 }
 .offert-location-wrapper {
+  width: fit-content;
   flex: 0;
   position: relative;
   display: flex;

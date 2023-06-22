@@ -31,6 +31,10 @@ class DateQueryCreator(QueryCreator):
                     "company": 1,
                     "createdAt": 1,
                     "employmentTypes": 1,
+                    "locations": 1,
+                    "workingMode": 1,
+                    "seniority": 1,
+                    "site": 1,
                 }
             },
             {"$sort": {"createdAt": sortBy}},

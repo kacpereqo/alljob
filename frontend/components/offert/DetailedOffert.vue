@@ -1,6 +1,6 @@
 <template>
   <div class="detailed-wrapper">
-    <div ref="fixedContainer" class="fixed">
+    <div v-if="data" ref="fixedContainer" class="fixed">
       <div class="header">
         <div class="title">
           {{ data.title }}
@@ -19,6 +19,18 @@ const ENV = useRuntimeConfig().public;
 const API_URL = ENV.API_URL;
 
 const fixedContainer = ref<HTMLElement | null>(null);
+
+const emit = defineEmits<{
+  (e: "loaded"): void;
+}>();
+
+const { data } = await useFetch(API_URL + "/details/" + id, {
+  method: "GET",
+  onResponse() {
+    emit("loaded");
+  },
+});
+
 let top = 0;
 
 function scrollHandler() {
@@ -37,12 +49,9 @@ onMounted(() => {
   if (fixedContainer.value) {
     top = fixedContainer.value.offsetTop;
   }
+
   scrollHandler();
   document.addEventListener("scroll", scrollHandler);
-});
-
-const { data } = await useFetch(API_URL + "/details/" + id, {
-  method: "GET",
 });
 </script>
 
