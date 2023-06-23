@@ -1,6 +1,6 @@
-import uvicorn
 import os
 
+import uvicorn
 from config import import_routers
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -31,5 +31,6 @@ if __name__ == "__main__":
 
     host = os.environ.get("HOST", "127.0.0.1")
     port = int(os.environ.get("PORT", "8080"))
+    debug = os.environ.get("DEBUG", False)
 
-    uvicorn.run("main:app", host=host, port=port)
+    uvicorn.run("main:app", host=host, port=port, reload=debug)

@@ -12,7 +12,12 @@
           <span class="company"> {{ props.offert.title }}</span>
           <span class="work-title">{{ props.offert.company.name }}</span>
         </div>
-        <span><OffertLocations :locations="offert.locations" /></span>
+        <div class="more-info">
+          <OffertLocations :locations="offert.locations" />
+          <!-- <JobProvider :provider="offert.site" /> -->
+          <WorkingMode :working-mode="offert.workingMode" />
+          <JobSeniority :seniority="offert.seniority" />
+        </div>
       </div>
     </div>
     <OffertTechnologies :technologies="props.offert.technologies" />
@@ -20,6 +25,8 @@
 </template>
 
 <script setup lang="ts">
+import JobSeniority from "./JobSeniority.vue";
+
 const props = defineProps<{
   offert: LeadingOffert;
 }>();
@@ -34,7 +41,11 @@ const props = defineProps<{
   border-radius: var(--border-radius-2);
   cursor: pointer;
 }
-
+.more-info {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
 .company-info {
   display: flex;
   flex-direction: column;

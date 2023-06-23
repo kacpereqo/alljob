@@ -70,6 +70,9 @@ class DBClient:
                             "createdAt": 1,
                             "employmentTypes": 1,
                             "locations": 1,
+                            "workingMode": 1,
+                            "seniority": 1,
+                            "site": 1,
                         }
                     },
                     {"$sort": {"createdAt": 1}},
@@ -89,19 +92,6 @@ class DBClient:
         return self.db.offerts.offerts.count_documents({})
 
     def search_for_offerts(self, query: str) -> list:
-        #
-        #   THE OLD WAY SEARCHER
-        #
-
-        # filter = {"$text": {"$search": query}}
-        # project = {"score": {"$meta": "textScore"}}
-        # result = self.client["offerts"]["offerts"].find(
-        #     filter=filter, projection=project
-        # )
-        # result.sort([("score", {"$meta": "textScore"})])
-
-        # return list(result)
-
         if query is None or query == "":
             print("Query is empty")
             return []

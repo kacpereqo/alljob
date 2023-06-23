@@ -15,6 +15,12 @@ useHead({
 </script>
 
 <style scoped>
+.detailed-offert {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacer-5);
+}
 .index-wrapper {
   display: flex;
   flex-direction: column;
