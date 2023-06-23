@@ -33,6 +33,7 @@ function mouseHander() {
   text-align: center;
   cursor: pointer;
   position: relative;
+  width: min-content;
   font-size: var(--font-size-5);
   overflow: hidden;
   border-radius: var(--border-radius-1);

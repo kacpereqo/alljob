@@ -84,9 +84,9 @@ function dragEndHandler() {
   document.removeEventListener("mousemove", mousemoveListner!);
 }
 
-onMounted(() => {
-  setBoxShadow();
+function setCursor() {
   if (!carousel.value || !items.value) return;
+
   if (
     carousel.value.scrollLeft + carousel.value.offsetWidth <
     items.value.offsetWidth
@@ -95,6 +95,16 @@ onMounted(() => {
   } else {
     carousel.value.style.cursor = "default";
   }
+}
+
+function onResize() {
+  setBoxShadow();
+  setCursor();
+}
+
+onMounted(() => {
+  setBoxShadow();
+  setCursor();
 });
 </script>
 
@@ -150,7 +160,7 @@ onMounted(() => {
   width: 5.4rem;
   height: 5.4rem;
   opacity: 0;
-  z-index: 1000;
+  z-index: 100;
   color: var(--accent-color);
   cursor: pointer;
   padding: 1.2rem;
