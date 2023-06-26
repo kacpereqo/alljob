@@ -31,7 +31,19 @@ const API_URL = ENV.API_URL;
 
 const container = ref<HTMLElement | null>(null);
 const fixedContainer = ref<HTMLElement | null>(null);
-let parentElement: Element | null;
+
+const emit = defineEmits<{
+  (e: "loaded"): void;
+}>();
+
+const { data } = await useFetch(API_URL + "/details/" + id, {
+  method: "GET",
+  onResponse() {
+    emit("loaded");
+  },
+});
+
+let top = 0;
 
 function scrollHandler() {
   if (!fixedContainer.value || !parentElement) return;
@@ -47,20 +59,12 @@ function scrollHandler() {
   }
 }
 
-const { data } = await useLazyFetch(API_URL + "/details/" + id, {
-  method: "GET",
-});
-
 onMounted(() => {
-  parentElement = document.querySelector(".id-wrapper");
-
-  if (!parentElement || !fixedContainer.value) return;
+  if (fixedContainer.value) {
+    top = fixedContainer.value.offsetTop;
+  }
 
   document.addEventListener("scroll", scrollHandler);
-  window.addEventListener("resize", () => {
-    fixedContainer.value.style.width = `${parentElement?.clientWidth}px`;
-  });
-  scrollHandler();
 });
 </script>
 
@@ -104,10 +108,10 @@ a {
   border-radius: var(--border-radius-2);
   top: 0;
   bottom: 0;
-  height: 100vh;
-  position: absolute;
-  overflow-y: auto;
-  background-color: var(--second-color);
+  margin-right: var(--spacer-7);
+  position: fixed;
+  overflow-y: scroll;
+  overflow-x: hidden;
   scrollbar-width: thin;
   display: flex;
 }
