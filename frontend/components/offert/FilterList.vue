@@ -9,27 +9,34 @@
           </LinedButton>
         </li>
         <li>
-          <LinedButton>
+          <LinedButton @click="showFilters = !showFilters">
             <span>Filtruj</span>
             <Icon name="material-symbols:filter-alt" />
-          </LinedButton>
-        </li>
-        <li>
-          <LinedButton>
-            <span>Sortuj</span>
-            <Icon name="material-symbols:sort-by-alpha-rounded" />
           </LinedButton>
         </li>
       </ul>
     </div>
   </div>
+  <div v-if="showFilters" class="filters"></div>
 </template>
+
+<script setup lang="ts">
+const showFilters = ref(true);
+</script>
 
 <style scoped>
 .filter-buttons ul {
   display: flex;
   gap: 3rem;
+  margin-right: 0.8rem;
   height: var(--filterbar-height);
+}
+
+.filters {
+  width: 100%;
+  height: 10rem;
+  background-color: var(--second-color);
+  margin-top: var(--spacer-3);
 }
 
 .filter-wrapper {

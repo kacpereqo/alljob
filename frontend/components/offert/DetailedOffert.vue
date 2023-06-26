@@ -31,24 +31,19 @@ const API_URL = ENV.API_URL;
 
 const container = ref<HTMLElement | null>(null);
 const fixedContainer = ref<HTMLElement | null>(null);
-
-let top = 0;
+let parentElement: Element | null;
 
 function scrollHandler() {
-  if (!fixedContainer.value) return;
-  const newTop = top - window.scrollY;
+  if (!fixedContainer.value || !parentElement) return;
   const marginTop = 10;
 
-  if (newTop < marginTop) {
+  if (parentElement.getBoundingClientRect().y < 0) {
+    fixedContainer.value.style.position = "fixed";
+    fixedContainer.value.style.width = `${parentElement?.clientWidth}px`;
     fixedContainer.value.style.top = marginTop + "px";
   } else {
-    fixedContainer.value.style.top = newTop + "px";
-  }
-}
-
-function WindowResizeHandler() {
-  if (fixedContainer.value && container.value) {
-    fixedContainer.value.style.width = `${container.value.clientWidth}px`;
+    fixedContainer.value.style.position = "absolute";
+    fixedContainer.value.style.top = "0px";
   }
 }
 
@@ -57,14 +52,15 @@ const { data } = await useLazyFetch(API_URL + "/details/" + id, {
 });
 
 onMounted(() => {
-  if (fixedContainer.value && container.value) {
-    top = fixedContainer.value.offsetTop;
-    WindowResizeHandler();
-  }
+  parentElement = document.querySelector(".id-wrapper");
 
-  scrollHandler();
+  if (!parentElement || !fixedContainer.value) return;
+
   document.addEventListener("scroll", scrollHandler);
-  window.addEventListener("resize", WindowResizeHandler);
+  window.addEventListener("resize", () => {
+    fixedContainer.value.style.width = `${parentElement?.clientWidth}px`;
+  });
+  scrollHandler();
 });
 </script>
 
@@ -77,7 +73,6 @@ a {
 .detailed-wrapper {
   display: flex;
   flex-direction: column;
-  overflow: hidden;
   flex: 1;
   position: relative;
 }
@@ -105,18 +100,16 @@ a {
 }
 
 .fixed {
-  --_top: calc(
-    var(--navbar-height) + var(--spacer-5) * 7 + var(--filterbar-height)
-  );
   padding: var(--spacer-5);
   border-radius: var(--border-radius-2);
-  top: var(--_top);
+  top: 0;
   bottom: 0;
-  margin-right: var(--spacer-9);
-  position: fixed;
+  height: 100vh;
+  position: absolute;
+  overflow-y: auto;
   background-color: var(--second-color);
-  overflow-y: scroll;
   scrollbar-width: thin;
+  display: flex;
 }
 
 .title {
@@ -127,7 +120,6 @@ a {
 
 .description {
   font-size: var(--font-size-6);
-  margin-top: var(--spacer-3);
 }
 
 .description ul {
